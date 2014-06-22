@@ -16,8 +16,7 @@ Usage
 The ```cfn``` directory contains three CloudFormation templates:
 
 - ```subnetfinder.template.json``` setup the complete infrastructure to implement the Custom Resource "SubnetFinder".
-See
-below for a list of resources it creates.
+See below for a list of resources it creates.
 
 - ```subnetfinder_test.template.json``` is used for unit testing.
 
@@ -26,31 +25,34 @@ below for a list of resources it creates.
 ```
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Create Infrastructure required to run finAMI Custom resource",
+    "Description": "Call SubnetFinder Custom Resource and give Subnet id as output.  You need to change VpcId, ServiceToken",
 
     "Resources": {
-        "AMIFinderTest": {
-            "Type": "Custom::AMIFinder",
+        "SubnetFinder": {
+            "Type": "Custom::SubnetFinder",
             "Version": "1.0",
             "Properties": {
-                "ServiceToken": "<insert SNS ARN here>",
-                "Version": "2012"
+                "ServiceToken": "<<insert your topic ARN here>>",
+                "VpcId": "<<insert your VPC id>>",
+                "TagName" : "<<insert the tag name you're searching for>>",
+                "TagValue" : "<<insert the tag value you're searching for>>"
             }
         }
     },
+
     "Outputs" : {
-        "WindowAMIID" : {
-            "Value" : { "Ref" : "AMIFinderTest" }
-        }
+        "ResourceId" : { "Value" : { "Ref" : "SubnetFinder" } },
+        "Subnet1" : { "Value" : { "Fn::GetAtt": [ "SubnetFinder", "<<insert the AZ name of your subnet>>"  ] } },
+        "Subnet2" : { "Value" : { "Fn::GetAtt": [ "SubnetFinder", "<<insert the AZ name of your subnet>>"  ] } }
     }
 }
 ```
 
-Other resources in the template can use ```{ "Ref" : "SubnetFinderTest" }``` to refer to the Subnet ID.  Typically,
+Other resources in the template can use ```{ "Fn::GetAtt": [ "SubnetFinder", "<<insert the AZ name of your subnet>>"  ] }``` to refer to the Subnet ID.  Typically,
 you will referer to the Subnet from an ```EC2::Instance``` resource.
 
 This template can not run "as is", you need to insert your Custom Resource's implementation SNS Topic ARN as
-```ServiceToken``` value.
+```ServiceToken``` value and define your search parameters.
 
 How does it work ?
 ------------------
@@ -64,14 +66,16 @@ The ```subnetfinder.template.json``` CFN template creates the environment to imp
 - an IAM Role to allow an EC2 instance to read from the queue and to call DescribeImage EC2 API
 - a Security Group allowing inbound SSH connections (debugging only - can be removed once everything is working)
 - an EC2 Instance bootstrapped with [```cfn-resource-bridge```](https://github.com/aws/aws-cfn-resource-bridge) and
-```findSubnet```, a custom python helper script
+```findSubnet.py```, a custom python helper script
 
 ```cfn-resource-bridge``` will poll the queue, waiting for CloudFormation messages, and will call appropriate shell
 scripts to respond to ```create```, ```update``` and ```delete``` requests.
 
-In this example, ```update``` and ```delete``` shell scripts are empty.  Only ```create``` is implemented.  It uses ```findAMI``` to retrieve the correct AMI IDs.
+In this example, ```update``` and ```delete``` shell scripts are empty.  Only ```create``` is implemented.  It uses
+```findSubnet.py``` to retrieve the correct Subnet IDs.
 
 TODO
 ----
 
+- should ```findSubnet.py``` return a list of subnet ids or just one ??
 - improve based on collected feedback
