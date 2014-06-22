@@ -1,0 +1,20 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Call SubnetFinder Custom Resource and give Subnet id as output",
+
+    "Resources": {
+        "AMIFinder": {
+            "Type": "Custom::SubnetFinder",
+            "Version": "1.0",
+            "Properties": {
+                "ServiceToken": "{{topic_arn}}",
+                "Version": "2012"
+            }
+        }
+    },
+    "Outputs" : {
+        "SubnetId" : {
+            "Value" : { "Ref" : "AMIFinder" }
+        }
+    }
+}
