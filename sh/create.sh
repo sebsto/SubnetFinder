@@ -23,7 +23,8 @@ then
     SN=$(/home/ec2-user/findSubnet.py -N ${Event_ResourceProperties_TagName} -V ${Event_ResourceProperties_TagValue})
     SN_ret=$?
 else
-    SN=$(/home/ec2-user/findSubnet.py -P ${Event_ResourceProperties_VpcId} -N ${Event_ResourceProperties_TagName} -V ${Event_ResourceProperties_TagVersion})
+    SN=$(/home/ec2-user/findSubnet.py -P ${Event_ResourceProperties_VpcId} -N ${Event_ResourceProperties_TagName} -V
+    ${Event_ResourceProperties_TagValue})
     SN_ret=$?
 fi
 
