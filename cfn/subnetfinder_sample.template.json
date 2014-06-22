@@ -17,7 +17,7 @@
 
     "Outputs" : {
         "ResourceId" : { "Value" : { "Ref" : "SubnetFinder" } },
-        "Subnet1" : { "Value" : { "Fn::GetAtt": [ "SubnetFinder",  "eu-west-1a" ] } },
-        "Subnet2" : { "Value" : { "Fn::GetAtt": [ "SubnetFinder",  "eu-west-1b" ] } }
+        "Subnet1" : { "Value" : { "Fn::GetAtt": [ "SubnetFinder", "eu-west-1a"  ] } },
+        "Subnet2" : { "Value" : { "Fn::GetAtt": [ "SubnetFinder", "eu-west-1b"  ] } }
     }
 }
