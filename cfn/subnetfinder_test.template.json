@@ -3,7 +3,7 @@
     "Description": "Call SubnetFinder Custom Resource and give Subnet id as output",
 
     "Resources": {
-        "AMIFinder": {
+        "SubnetFinder": {
             "Type": "Custom::SubnetFinder",
             "Version": "1.0",
             "Properties": {
@@ -17,7 +17,7 @@
 
     "Outputs" : {
         "SubnetId" : {
-            "Value" : { "Ref" : "AMIFinder" }
+            "Value" : { "Ref" : "SubnetFinder" }
         }
     }
 }

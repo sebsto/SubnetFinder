@@ -1,61 +1,23 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Create an Infra using SubnetFinder custom resource.  You need to change SubnetFinder:ServiceToken before using this template",
-
-    "Parameters" : {
-        "KeyName" : {
-            "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the Instance",
-            "Type" : "String",
-            "Default" : "sst-aws"
-        },
-        "InstanceType" : {
-            "Description" : "Instance type",
-            "Type" : "String",
-            "Default" : "t1.micro",
-            "AllowedValues" : [ "t1.micro","m3.medium","m3.large"],
-            "ConstraintDescription" : "must be a valid EC2 instance type."
-        }
-    },
+    "Description": "Call SubnetFinder Custom Resource and give Subnet id as output.  You need to change VpcId, ServiceToken",
 
     "Resources": {
         "SubnetFinder": {
-            "Type": "Custom::AMIFinder",
+            "Type": "Custom::SubnetFinder",
             "Version": "1.0",
             "Properties": {
-                "ServiceToken": "arn:aws:sns:eu-west-1:577031028568:TestCR-CFNCustomResourceAMIFinderTopic-1J5KTFPC09YMX",
-                "Version": "2012"
-            }
-        },
-        "RDPSecurityGroup" : {
-            "Type" : "AWS::EC2::SecurityGroup",
-            "Properties" : {
-                "GroupDescription" : "RDP to the instance",
-                "SecurityGroupIngress" : [
-                    {
-                        "CidrIp" : "0.0.0.0/0",
-                        "FromPort" : "3389",
-                        "ToPort" : "3389",
-                        "IpProtocol" : "tcp"
-                    }
-                ]
-            }
-        },
-        "WindowsInstance" : {
-            "Type" : "AWS::EC2::Instance",
-            "Properties" : {
-                "ImageId" : { "Ref" : "AMIFinder" },
-                "InstanceType" : { "Ref" : "InstanceType" },
-                "KeyName" : { "Ref" : "KeyName" },
-                "SecurityGroups" : [{ "Ref" : "RDPSecurityGroup" }]
+                "ServiceToken": "arn:aws:sns:eu-west-1:577031028568:subnetfinder-CFNCustomResourceSubnetFinderTopic-NJA0PDXTHFJV",
+                "VpcId": "vpc-0ae40c6f",
+                "TagName" : "XXXTAGNAMEXXX",
+                "TagValue" : "XXXTAGVALUE2XXX"
             }
         }
     },
+
     "Outputs" : {
-        "WindowsAMIID" : {
-            "Value" : { "Ref" : "AMIFinder" }
-        },
-        "WindowsInstanceDNSName" : {
-            "Value" : { "Fn::GetAtt" : [ "WindowsInstance" , "PublicDnsName" ] }
-        }
+        "ResourceId" : { "Value" : { "Ref" : "SubnetFinder" } },
+        "Subnet1" : { "Value" : { "Fn::GetAtt": [ "SubnetFinder",  "eu-west-1a" ] } },
+        "Subnet2" : { "Value" : { "Fn::GetAtt": [ "SubnetFinder",  "eu-west-1b" ] } }
     }
 }
