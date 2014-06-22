@@ -8,12 +8,13 @@
             "Version": "1.0",
             "Properties": {
                 "ServiceToken": "{{topic_arn}}",
-                "VpcId": "vpc-264d174d",
+                "VpcId": "{{vpc_id}}",
                 "TagName" : "env",
                 "TagValue" : "prod"
             }
         }
     },
+
     "Outputs" : {
         "SubnetId" : {
             "Value" : { "Ref" : "AMIFinder" }

@@ -1,0 +1,126 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Create a Test VPC to execute SubnetFinder",
+
+    "Parameters" : {
+        "TagName" : {
+            "Description" : "The name of tag to attach to subnet",
+            "Type" : "String",
+            "Default" : "XXXTAGNAMEXXX"
+        },
+        "TagValue1" : {
+            "Description" : "The name of tag to attach to subnet",
+            "Type" : "String",
+            "Default" : "XXXTAGVALUE1XXX"
+        },
+        "TagValue2" : {
+            "Description" : "The name of tag to attach to subnet",
+            "Type" : "String",
+            "Default" : "XXXTAGVALUE2XXX"
+        }
+    },
+
+    "Mappings": {
+
+        "SubnetConfig": {
+            "VPC": {"CIDR": "1.0.0.0/16"},
+            "Public1": {"CIDR": "1.0.1.0/24"},
+            "Public2": {"CIDR": "1.0.2.0/24"},
+            "Public3": {"CIDR": "1.0.3.0/24"}
+        }
+    },
+
+    "Resources": {
+
+        "VPC": {
+            "Type": "AWS::EC2::VPC",
+            "Properties": {
+                "EnableDnsSupport": "true",
+                "EnableDnsHostnames": "true",
+                "CidrBlock": {"Fn::FindInMap": [ "SubnetConfig", "VPC", "CIDR" ]},
+                "Tags": [
+                    {
+                        "Key": "Application",
+                        "Value": "SubnetFinderTest"
+                    }
+                ]
+            }
+        },
+
+        "PublicSubnet1": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": { "Ref": "VPC"},
+                "CidrBlock": {"Fn::FindInMap": [ "SubnetConfig", "Public1", "CIDR" ]},
+                "Tags": [
+                    {
+                        "Key": "Application",
+                        "Value": "SubnetFinderTest"
+                    },
+                    {
+                        "Key": { "Ref" : "TagName" },
+                        "Value": { "Ref" : "TagValue1" }
+                    }
+                ],
+                "AvailabilityZone": {"Fn::Select": ["0", {"Fn::GetAZs": ""}]}
+            }
+        },
+
+        "PublicSubnet2": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": { "Ref": "VPC"},
+                "CidrBlock": {"Fn::FindInMap": [ "SubnetConfig", "Public2", "CIDR" ]},
+                "Tags": [
+                    {
+                        "Key": "Application",
+                        "Value": "SubnetFinderTest"
+                    },
+                    {
+                        "Key": { "Ref" : "TagName" },
+                        "Value": { "Ref" : "TagValue2" }
+                    }
+                ],
+                "AvailabilityZone": {"Fn::Select": ["1", {"Fn::GetAZs": ""}]}
+            }
+        },
+
+        "PublicSubnet3": {
+            "Type": "AWS::EC2::Subnet",
+            "Properties": {
+                "VpcId": {"Ref": "VPC"},
+                "CidrBlock": {"Fn::FindInMap": [ "SubnetConfig", "Public3", "CIDR" ]},
+                "Tags": [
+                    {
+                        "Key": "Application",
+                        "Value": "SubnetFinderTest"
+                    },
+                    {
+                        "Key": { "Ref" : "TagName" },
+                        "Value": { "Ref" : "TagValue2" }
+                    }
+                ],
+                "AvailabilityZone": {"Fn::Select": ["0", {"Fn::GetAZs": ""}]}
+            }
+        }
+    },
+
+    "Outputs": {
+        "VPCId": {
+            "Description": "VPCId of the newly created VPC",
+            "Value": {"Ref": "VPC"}
+        },
+        "PublicSubnet1": {
+            "Description": "SubnetId of the vpn hosts subnet 1",
+            "Value": {"Ref": "PublicSubnet1"}
+        },
+        "PublicSubnet2": {
+            "Description": "SubnetId of the vpn hosts subnet 2",
+            "Value": {"Ref": "PublicSubnet2"}
+        },
+        "PublicSubnet3": {
+            "Description": "SubnetId of the vpn hosts subnet 2",
+            "Value": {"Ref": "PublicSubnet3"}
+        }
+    }
+}

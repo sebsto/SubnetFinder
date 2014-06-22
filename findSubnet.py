@@ -28,7 +28,7 @@ class SubnetFinder:
         #shared connection object - but do not cache it as it is region dependant
         self.conn = None
 
-    def findSubnetInRegion(self, region, vpcid, tagName, tagValue):
+    def findSubnetInRegion(self, region, tagName, tagValue, vpcid=None):
         '''
             Search for a Subnet in the specific region and
             the specific tag name and value
@@ -80,7 +80,7 @@ def main(finder, **kwargs):
             logger.error('Unknown error while trying to get region name. Abording.')
             sys.exit(-1)
 
-    subnet = finder.findSubnetInRegion(region, kwargs['vpcid'], kwargs['tagname'], kwargs['tagvalue'])
+    subnet = finder.findSubnetInRegion(region, kwargs['tagname'], kwargs['tagvalue'], vpcid=kwargs['vpcid'])
     result = {}
     if subnet is not None:
         # Print in JSON on one single line to simplify handling by cfn-resource-bridge
