@@ -10,12 +10,13 @@ __version__ = 1.0
 
 '''
 Usage : findSubnet --region <region_name>
+                   --vpcid <vpc-id> (optional, by default, search every VPC in the region)
                    --tagName <name of the tag to search for>
                    --tagValue <value of the tag to search for>
 
-Find a subnet in the given region, with the given tag Name=Value
+Find a subnet in the given region & VPC, with the given tag Name=Value
 
-Example : findSubnet --region eu-west-1 --tagName env --tagValue prod
+Example : findSubnet --region eu-west-1 --vpcid vpc-123456 --tagName env --tagValue prod
 '''
 
 class SubnetFinder:
@@ -27,7 +28,7 @@ class SubnetFinder:
         #shared connection object - but do not cache it as it is region dependant
         self.conn = None
 
-    def findSubnetInRegion(self, region, tagName, tagValue):
+    def findSubnetInRegion(self, region, vpcid, tagName, tagValue):
         '''
             Search for a Subnet in the specific region and
             the specific tag name and value
@@ -43,7 +44,11 @@ class SubnetFinder:
             self.logger.error('Can not connect to AWS')
             return None
 
-        subnetList = self.conn.get_all_subnets(filters={"tag:" + tagName : tagValue})
+        f = {"tag:" + tagName : tagValue}
+        if vpcid is not None:
+            f.update({'vpc-id' : vpcid})
+
+        subnetList = self.conn.get_all_subnets(filters=f)
         self.logger.debug('Retrieved %d subnet' % len(subnetList))
 
         if len(subnetList) < 1:
@@ -56,6 +61,7 @@ class SubnetFinder:
 
 def main(finder, **kwargs):
 
+    finder.logger.debug('Parameter VPC      = %s' % kwargs['vpcid'])
     finder.logger.debug('Parameter tagName  = %s' % kwargs['tagname'])
     finder.logger.debug('Parameter tagValue = %s' % kwargs['tagvalue'])
     finder.logger.debug('Parameter region   = %s' % kwargs['region'])
@@ -74,9 +80,15 @@ def main(finder, **kwargs):
             logger.error('Unknown error while trying to get region name. Abording.')
             sys.exit(-1)
 
-    subnet = finder.findSubnetInRegion(region, kwargs['tagname'], kwargs['tagvalue'])
+    subnet = finder.findSubnetInRegion(region, kwargs['vpcid'], kwargs['tagname'], kwargs['tagvalue'])
+    result = {}
     if subnet is not None:
-        print [s.id for s in subnet]
+        # Print in JSON on one single line to simplify handling by cfn-resource-bridge
+        import json
+        for s in subnet:
+            result[s.availability_zone] = s.id
+
+        print json.dumps(result)
         sys.exit(0)
     else:
         sys.exit(-1)
@@ -98,8 +110,12 @@ if __name__ == '__main__':
         parser = argparse.ArgumentParser(description='Find a VPC Subnet with given tags', version='%(prog)s v' +
                                                                                             str(__version__))
     parser.add_argument('-r', '--region', type=str, help='Region name (default to local region when run on EC2)')
-    parser.add_argument("-tn", "--tagname", type=str, help='Name of the Tag to search for', required=True)
+    parser.add_argument('-P', '--vpcid', type=str, help='VPC id to search into (by default, ' \
+                                                                       'will search ' \
+                                                                    'in every '
+                                                          'VPC')
+    parser.add_argument('-N', '--tagname', type=str, help='Name of the Tag to search for', required=True)
 
-    parser.add_argument('-tv', '--tagvalue', type=str, help='Value of the tag to search for')
+    parser.add_argument('-V', '--tagvalue', type=str, help='Value of the tag to search for', required=True)
     args = parser.parse_args()
     main(finder, **vars(args))

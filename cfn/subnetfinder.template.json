@@ -15,31 +15,31 @@
     "Mappings": {
         "AWSRegionToAMI": {
             "us-east-1": {
-                "AMI": "ami-2f726546"
+                "AMI": "ami-fb8e9292"
             },
             "us-west-2": {
-                "AMI": "ami-b8f69f88"
+                "AMI": "ami-043a5034"
             },
             "us-west-1": {
-                "AMI": "ami-84f1cfc1"
+                "AMI": "ami-7aba833f"
             },
             "eu-west-1": {
-                "AMI": "ami-a921dfde"
+                "AMI": "ami-2918e35e"
             },
             "ap-southeast-1": {
-                "AMI": "ami-787c2c2a"
+                "AMI": "ami-b40d5ee6"
             },
             "ap-northeast-1": {
-                "AMI": "ami-a1bec3a0"
+                "AMI": "ami-c9562fc8"
             },
             "ap-southeast-2": {
-                "AMI": "ami-0bc85031"
+                "AMI": "ami-3b4bd301"
             },
             "sa-east-1": {
-                "AMI": "ami-89de7c94"
+                "AMI": "ami-215dff3c"
             },
             "us-gov-west-1": {
-                "AMI": "ami-433b5c60"
+                "AMI": "ami-cf0e69ec"
             }
         }
     },

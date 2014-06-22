@@ -23,7 +23,7 @@ class AMIFinderCustomResourceTest(unittest.TestCase):
 
         # create the stack
         now = datetime.datetime.today().strftime('%Y%m%d-%H%M%S')
-        stackID = conn.create_stack(stack_name='AMIFinderCustomResource-' + now, template_body=data)
+        stackID = conn.create_stack(stack_name='SubnetFinderCustomResource-' + now, template_body=data)
         stack = conn.describe_stacks(stackID)[0]
         #print vars(stack)
         self.logger.debug('Waiting for Custom Resource Stack to be created')
@@ -57,7 +57,7 @@ class AMIFinderCustomResourceTest(unittest.TestCase):
             # launch sample template stack
             conn = boto.cloudformation.connect_to_region(region)
             now = datetime.datetime.today().strftime('%Y%m%d-%H%M%S')
-            stackID = conn.create_stack(stack_name='TestAMIFinderCustomResource-' + now, template_body=testTemplate)
+            stackID = conn.create_stack(stack_name='TestSubnetFinderCustomResource-' + now, template_body=testTemplate)
             stackTest = conn.describe_stacks(stackID)[0]
             #print vars(stackTest)
             self.logger.debug('Waiting for Test Stack to be created')
@@ -85,44 +85,44 @@ class AMIFinderCustomResourceTest(unittest.TestCase):
     def test_eu_west_1(self):
         region = 'eu-west-1'
         stack = self.doTest(region)
-        self.assertFindAMI(stack)
+        self.assertFindSubnet(stack)
 
-    def test_us_east_1(self):
-        region = 'us-east-1'
-        stack = self.doTest(region)
-        self.assertFindAMI(stack)
+    # def test_us_east_1(self):
+    #     region = 'us-east-1'
+    #     stack = self.doTest(region)
+    #     self.assertFindSubnet(stack)
+    #
+    # def test_us_west_1(self):
+    #     region = 'us-west-1'
+    #     stack = self.doTest(region)
+    #     self.assertFindSubnet(stack)
+    #
+    # def test_us_west_2(self):
+    #     region = 'us-west-2'
+    #     stack = self.doTest(region)
+    #     self.assertFindSubnet(stack)
+    #
+    # def test_sa_east_1(self):
+    #     region = 'sa-east-1'
+    #     stack = self.doTest(region)
+    #     self.assertFindSubnet(stack)
+    #
+    # def test_ap_southeast_1(self):
+    #     region = 'ap-southeast-1'
+    #     stack = self.doTest(region)
+    #     self.assertFindSubnet(stack)
+    #
+    # def test_ap_southeast_2(self):
+    #     region = 'ap-southeast-2'
+    #     stack = self.doTest(region)
+    #     self.assertFindSubnet(stack)
+    #
+    # def test_ap_northeast_1(self):
+    #     region = 'ap-northeast-1'
+    #     stack = self.doTest(region)
+    #     self.assertFindSubnet(stack)
 
-    def test_us_west_1(self):
-        region = 'us-west-1'
-        stack = self.doTest(region)
-        self.assertFindAMI(stack)
-
-    def test_us_west_2(self):
-        region = 'us-west-2'
-        stack = self.doTest(region)
-        self.assertFindAMI(stack)
-
-    def test_sa_east_1(self):
-        region = 'sa-east-1'
-        stack = self.doTest(region)
-        self.assertFindAMI(stack)
-
-    def test_ap_southeast_1(self):
-        region = 'ap-southeast-1'
-        stack = self.doTest(region)
-        self.assertFindAMI(stack)
-
-    def test_ap_southeast_2(self):
-        region = 'ap-southeast-2'
-        stack = self.doTest(region)
-        self.assertFindAMI(stack)
-
-    def test_ap_northeast_1(self):
-        region = 'ap-northeast-1'
-        stack = self.doTest(region)
-        self.assertFindAMI(stack)
-
-    def assertFindAMI(self, stack):
+    def assertFindSubnet(self, stack):
         #improve test by hardcoding expected AMI ID ??
         self.assertEqual(len(stack.outputs), 1, "Test Stack outputs len is not 1")
         self.assertRegexpMatches( stack.outputs[0].value, '^ami-.*$',"Test Stack does not return an AMI id")
