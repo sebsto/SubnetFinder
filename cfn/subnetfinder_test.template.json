@@ -9,15 +9,14 @@
             "Properties": {
                 "ServiceToken": "{{topic_arn}}",
                 "VpcId": "{{vpc_id}}",
-                "TagName" : "env",
-                "TagValue" : "prod"
+                "TagName" : "{{tag_name}}",
+                "TagValue" : "{{tag_value}}"
             }
         }
     },
 
     "Outputs" : {
-        "SubnetId" : {
-            "Value" : { "Ref" : "SubnetFinder" }
-        }
+        "ResourceId" : { "Value" : { "Ref" : "SubnetFinder" } },
+        "Subnet1" : { "Value" : { "Fn::GetAtt": [ "SubnetFinder", "{{az_name}}"  ] } }
     }
 }
