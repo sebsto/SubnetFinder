@@ -9,9 +9,18 @@ region and a given VPCid
 
 Use this Custom Resource to avoid hard coding subnet ids inside your CFN templates.
 
+How does it works ?
+-------------------
 
-Usage
------
+As a user, you need just two step to start to use this custom CFN resource
+
+- First run ```subnetfinder.template.json``` to setup the infrastructure to offer a custom CFN resource.
+- Take note of the SNS Topic ARN in the output section of that stack
+- Prepare your stack to use this custom resource (see ```subnetfinder_sample.template.json``` below for an example)
+- Run your own CFN template.
+
+Available templates
+-------------------
 
 The ```cfn``` directory contains three CloudFormation templates:
 
