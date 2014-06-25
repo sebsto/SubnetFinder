@@ -12,7 +12,7 @@ class SubnetFinderCustomResourceTest(unittest.TestCase):
     def setUpClass(cls):
         logging.basicConfig()
         cls.logger = logging.getLogger(__name__)
-        cls.logger.setLevel(logging.INFO)
+        cls.logger.setLevel(logging.DEBUG)
 
     def setupVPC(self, region, tagName, tagValue1, tagValue2):
         #create a VPC and 3 subnets for the purpose of this test
@@ -128,53 +128,53 @@ class SubnetFinderCustomResourceTest(unittest.TestCase):
 
         return stackTest
 
-    def test_eu_west_1(self):
-        region = 'eu-west-1'
-        azName = 'eu-west-1a'
-        stack = self.doTest(region, azName)
-        self.assertFindSubnet(stack)
-
+    # def test_eu_west_1(self):
+    #     region = 'eu-west-1'
+    #     azName = 'eu-west-1a'
+    #     stack = self.doTest(region, azName)
+    #     self.assertFindSubnet(stack)
+    #
     def test_us_east_1(self):
         region = 'us-east-1'
         azName = 'us-east-1a'
         stack = self.doTest(region, azName)
         self.assertFindSubnet(stack)
-
-    def test_us_west_1(self):
-        region = 'us-west-1'
-        azName = 'us-west-1a'
-        stack = self.doTest(region, azName)
-        self.assertFindSubnet(stack)
-
-    def test_us_west_2(self):
-        region = 'us-west-2'
-        azName = 'us-west-2a'
-        stack = self.doTest(region, azName)
-        self.assertFindSubnet(stack)
-
-    def test_sa_east_1(self):
-        region = 'sa-east-1'
-        azName = 'sa-east-1a'
-        stack = self.doTest(region, azName)
-        self.assertFindSubnet(stack)
-
-    def test_ap_southeast_1(self):
-        region = 'ap-southeast-1'
-        azName = 'ap-southeast-1a'
-        stack = self.doTest(region, azName)
-        self.assertFindSubnet(stack)
-
-    def test_ap_southeast_2(self):
-        region = 'ap-southeast-2'
-        azName = 'ap-southeast-2a'
-        stack = self.doTest(region, azName)
-        self.assertFindSubnet(stack)
-
-    def test_ap_northeast_1(self):
-        region = 'ap-northeast-1'
-        azName = 'ap-northeast-1a'
-        stack = self.doTest(region, azName)
-        self.assertFindSubnet(stack)
+    #
+    # def test_us_west_1(self):
+    #     region = 'us-west-1'
+    #     azName = 'us-west-1a'
+    #     stack = self.doTest(region, azName)
+    #     self.assertFindSubnet(stack)
+    #
+    # def test_us_west_2(self):
+    #     region = 'us-west-2'
+    #     azName = 'us-west-2a'
+    #     stack = self.doTest(region, azName)
+    #     self.assertFindSubnet(stack)
+    #
+    # def test_sa_east_1(self):
+    #     region = 'sa-east-1'
+    #     azName = 'sa-east-1a'
+    #     stack = self.doTest(region, azName)
+    #     self.assertFindSubnet(stack)
+    #
+    # def test_ap_southeast_1(self):
+    #     region = 'ap-southeast-1'
+    #     azName = 'ap-southeast-1a'
+    #     stack = self.doTest(region, azName)
+    #     self.assertFindSubnet(stack)
+    #
+    # def test_ap_southeast_2(self):
+    #     region = 'ap-southeast-2'
+    #     azName = 'ap-southeast-2a'
+    #     stack = self.doTest(region, azName)
+    #     self.assertFindSubnet(stack)
+    #
+    # def test_ap_northeast_1(self):
+    #     region = 'ap-northeast-1'
+    #     azName = 'ap-northeast-1a'
+    #     stack = self.doTest(region, azName)
+    #     self.assertFindSubnet(stack)
 
     def assertFindSubnet(self, stack):
         self.assertEqual(len(stack.outputs), 2, "Test Stack outputs len is not 2")

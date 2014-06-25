@@ -7,7 +7,8 @@ import boto.cloudformation
 
 from findSubnet import SubnetFinder
 
-REGION = 'eu-west-1'
+#REGION = 'eu-west-1'
+REGION = 'us-east-1'
 
 def setupVPC(logger, tagName, tagValue1, tagValue2):
     #create a VPC and 3 subnets for the purpose of this test
